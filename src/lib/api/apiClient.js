@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'http://localhost:5050/do'
+const API_URL = 'https://full-stack-backend-1s64.onrender.com/do'
 
 export const api = axios.create({
   baseURL: API_URL,
