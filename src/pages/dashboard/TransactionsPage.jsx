@@ -130,7 +130,7 @@ export const TransactionsPage = () => {
                 return (
                   <div
                     key={tx._id}
-                    className="p-4 flex items-center justify-between hover:bg-[#f7f9fb] transition-colors"
+                    className="flex flex-col gap-3 p-4 transition-colors hover:bg-[#f7f9fb] sm:flex-row sm:items-center sm:justify-between"
                   >
                     <div className="flex items-center gap-3">
                       <div
@@ -161,7 +161,7 @@ export const TransactionsPage = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-between gap-3 sm:justify-end sm:gap-4">
                       <span
                         className={`text-sm font-bold font-mono ${
                           isIncome ? "text-emerald-600" : "text-[#191c1e]"

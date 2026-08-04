@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   LayoutDashboard,
   Receipt,
@@ -7,7 +7,9 @@ import {
   LogOut,
   PlusCircle,
   Wallet,
+  X,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const Sidebar = ({
   activeRoute = "dashboard",
@@ -15,7 +17,19 @@ export const Sidebar = ({
   onLogout,
   onOpenAddTx,
   user,
+  isOpen = false,
+  onClose,
 }) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   const menuItems = [
     {
       id: "dashboard",
@@ -39,16 +53,33 @@ export const Sidebar = ({
   ];
 
   return (
-    <aside className="w-64 bg-[#191c1e] text-white flex flex-col justify-between p-4 min-h-screen border-r border-white/10">
-      <div className="space-y-6">
+    <aside
+      className={cn(
+        "fixed inset-y-0 left-0 z-30 flex h-screen w-64 max-w-[min(16rem,85vw)] flex-col justify-between border-r border-white/10 bg-[#191c1e] p-4 text-white shadow-xl transition-transform duration-300 ease-in-out md:static md:z-auto md:h-auto md:min-h-screen md:max-w-none md:translate-x-0 md:shadow-none",
+        isOpen ? "translate-x-0" : "-translate-x-full",
+      )}
+      aria-hidden={isMobile && !isOpen ? true : undefined}
+      aria-label="Main navigation"
+    >
+      <div className="min-h-0 flex-1 space-y-6 overflow-y-auto">
         {/* App Logo */}
-        <div className="flex items-center gap-3 px-3 py-2">
-          <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center text-black font-bold">
-            <Wallet className="w-5 h-5" />
+        <div className="flex items-center justify-between gap-2 px-3 py-2">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-500 font-bold text-black">
+              <Wallet className="h-5 w-5" />
+            </div>
+            <span className="truncate font-mono text-lg font-bold tracking-wider">
+              FinTrack Pro
+            </span>
           </div>
-          <span className="font-mono font-bold text-lg tracking-wider">
-            FinTrack Pro
-          </span>
+          <button
+            type="button"
+            onClick={() => onClose?.()}
+            className="rounded-lg p-1.5 text-[#c6c6cd] transition-colors hover:bg-white/10 hover:text-white md:hidden"
+            aria-label="Close menu"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
 
         {/* Quick Action: Add Transaction Button */}
@@ -84,7 +115,7 @@ export const Sidebar = ({
       </div>
 
       {/* User Info & Logout */}
-      <div className="border-t border-white/10 pt-4 space-y-3">
+      <div className="shrink-0 border-t border-white/10 pt-4 space-y-3">
         <div className="flex items-center gap-3 px-3">
           <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center font-bold text-xs uppercase">
             {user?.username ? user.username[0] : "U"}

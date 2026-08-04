@@ -39,7 +39,7 @@ export const LoginPage = () => {
         </Card>
 
         {/* Footer Links */}
-        <div className="flex items-center gap-6 mt-8 text-xs font-medium text-[#45464d]">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-[#45464d] sm:gap-6">
           <a href="#" className="hover:text-black transition-colors">
             Security Statement
           </a>
