@@ -38,6 +38,10 @@ interface NewTransactionPayload {
   date: string;
 }
 
+function getTodayDateInput(): string {
+  return new Date().toLocaleDateString("en-CA");
+}
+
 export const AddTransactionModal = ({
   isOpen,
   onClose,
@@ -49,7 +53,7 @@ export const AddTransactionModal = ({
     type: "expense",
     category: "",
     description: "",
-    date: new Date().toISOString().split("T")[0],
+    date: getTodayDateInput(),
   });
 
   // Fetch categories (Backend-ku wuxuu soo baxaysaa oo kaliya kuwa user-ka u furan)
@@ -94,14 +98,13 @@ export const AddTransactionModal = ({
       toast.success("Transaction added successfully!");
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       queryClient.invalidateQueries({ queryKey: ["transactions-summary"] });
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
 
       setFormData({
         amount: "",
         type: "expense",
         category: "",
         description: "",
-        date: new Date().toISOString().split("T")[0],
+        date: getTodayDateInput(),
       });
       onClose();
     },
@@ -138,7 +141,9 @@ export const AddTransactionModal = ({
       type: formData.type,
       category: formData.category,
       description: formData.description,
-      date: formData.date,
+      date: formData.date
+        ? new Date(`${formData.date}T00:00:00`).toISOString()
+        : new Date().toISOString(),
     });
   };
 

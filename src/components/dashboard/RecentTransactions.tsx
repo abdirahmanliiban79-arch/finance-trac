@@ -103,7 +103,8 @@ export const RecentTransactions = ({
                   <button
                     onClick={() => deleteMutation.mutate(tx._id)}
                     disabled={deleteMutation.isPending}
-                    className="opacity-0 group-hover:opacity-100 text-[#ba1a1a] hover:bg-rose-50 p-1.5 rounded transition-all"
+                    className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-visible:opacity-100 text-[#ba1a1a] hover:bg-rose-50 p-1.5 rounded transition-all"
+                    aria-label="Delete transaction"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>

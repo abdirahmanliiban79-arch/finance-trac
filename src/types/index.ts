@@ -1,37 +1,47 @@
+export type TransactionType = "income" | "expense";
+
+export type UserRole = "user" | "admin";
+
 export interface User {
   _id?: string;
   id?: string;
   username: string;
   email: string;
-  role?: string;
+  role?: UserRole;
+  profilePic?: string;
 }
 
 export interface Category {
   _id?: string;
   id?: string;
   name: string;
-  type: "income" | "expense" | string;
+  type: TransactionType;
   isCustom?: boolean;
 }
 
 export interface Transaction {
   _id: string;
   amount: number;
-  type: "income" | "expense" | string;
+  type: TransactionType;
   category?: Category;
   description?: string;
   date: string;
 }
 
 export interface Summary {
-  netBalance?: number;
-  totalIncome?: number;
-  totalExpense?: number;
+  period?: {
+    year: number;
+    month: number;
+  };
+  netBalance: number;
+  totalIncome: number;
+  totalExpense: number;
 }
 
 export interface AuthResponse {
-  user?: User;
+  status?: string;
   token?: string;
+  user?: User;
   data?: {
     user?: User;
     token?: string;
