@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import Link from "next/link";
 import {
   LayoutDashboard,
   Receipt,
@@ -28,7 +29,6 @@ const getServerMobileSnapshot = () => false;
 
 interface SidebarProps {
   activeRoute?: string;
-  onNavigate?: (path: string) => void;
   onLogout?: () => void;
   onOpenAddTx?: () => void;
   user?: User | null;
@@ -38,7 +38,6 @@ interface SidebarProps {
 
 export const Sidebar = ({
   activeRoute = "dashboard",
-  onNavigate,
   onLogout,
   onOpenAddTx,
   user,
@@ -74,14 +73,14 @@ export const Sidebar = ({
   ];
 
   return (
-    <aside
-      className={cn(
-        "fixed inset-y-0 left-0 z-30 flex h-screen w-64 max-w-[min(16rem,85vw)] flex-col justify-between border-r border-white/10 bg-[#191c1e] p-4 text-white shadow-xl transition-transform duration-300 ease-in-out md:static md:z-auto md:h-auto md:min-h-screen md:max-w-none md:translate-x-0 md:shadow-none",
-        isOpen ? "translate-x-0" : "-translate-x-full",
-      )}
-      aria-hidden={isMobile && !isOpen ? true : undefined}
-      aria-label="Main navigation"
-    >
+      <aside
+        className={cn(
+          "fixed inset-y-0 left-0 z-30 flex h-screen w-64 max-w-[min(16rem,85vw)] flex-col justify-between border-r border-white/10 bg-[#191c1e] p-4 text-white shadow-xl transition-transform duration-300 ease-in-out md:static md:z-auto md:h-auto md:min-h-screen md:max-w-none md:translate-x-0 md:shadow-none",
+          isOpen ? "translate-x-0" : "-translate-x-full",
+        )}
+        inert={isMobile && !isOpen ? true : undefined}
+        aria-label="Main navigation"
+      >
       <div className="min-h-0 flex-1 space-y-6 overflow-y-auto">
         {/* App Logo */}
         <div className="flex items-center justify-between gap-2 px-3 py-2">
@@ -118,9 +117,11 @@ export const Sidebar = ({
             const Icon = item.icon;
             const isActive = activeRoute === item.id;
             return (
-              <button
+              <Link
                 key={item.id}
-                onClick={() => onNavigate && onNavigate(item.path)}
+                href={item.path}
+                onClick={() => onClose?.()}
+                aria-current={isActive ? "page" : undefined}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition-colors ${
                   isActive
                     ? "bg-white/10 text-white"
@@ -129,7 +130,7 @@ export const Sidebar = ({
               >
                 <Icon className="w-4 h-4" />
                 <span>{item.label}</span>
-              </button>
+              </Link>
             );
           })}
         </nav>

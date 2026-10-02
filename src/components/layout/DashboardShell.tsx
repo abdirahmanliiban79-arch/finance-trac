@@ -1,54 +1,69 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
-import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/api/store/authStore";
+import { queryClient } from "@/lib/queryClient";
 import { AddTransactionModal } from "../dashboard/AddTransactionModal";
 
-interface AppLayoutProps {
-  children: ReactNode;
-  activeRoute?: string;
-  title?: string;
+interface RouteMeta {
+  id: string;
+  title: string;
 }
 
-export const AppLayout = ({
-  children,
-  activeRoute = "dashboard",
-  title = "Overview",
-}: AppLayoutProps) => {
+const ROUTES: Record<string, RouteMeta> = {
+  "/dashboard": { id: "dashboard", title: "Dashboard" },
+  "/transactions": { id: "transactions", title: "Transactions Management" },
+  "/categories": { id: "categories", title: "Categories Management" },
+  "/settings": { id: "settings", title: "Account Settings" },
+};
+
+const DEFAULT_ROUTE: RouteMeta = { id: "dashboard", title: "Dashboard" };
+
+export const DashboardShell = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, clearAuth } = useAuthStore();
   const [isAddTxOpen, setIsAddTxOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const handleLogout = () => {
-    clearAuth();
-    router.replace("/login");
-  };
+  const route = ROUTES[pathname] ?? DEFAULT_ROUTE;
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
-    const lockScroll = sidebarOpen && mq.matches;
-    document.body.style.overflow = lockScroll ? "hidden" : "";
+    const applyScrollLock = () => {
+      document.body.style.overflow =
+        sidebarOpen && mq.matches ? "hidden" : "";
+    };
+
+    applyScrollLock();
+    mq.addEventListener("change", applyScrollLock);
+
     return () => {
+      mq.removeEventListener("change", applyScrollLock);
       document.body.style.overflow = "";
     };
   }, [sidebarOpen]);
 
   useEffect(() => {
     if (!sidebarOpen) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSidebarOpen(false);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSidebarOpen(false);
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [sidebarOpen]);
 
+  const handleLogout = () => {
+    clearAuth();
+    queryClient.clear();
+    router.replace("/login");
+  };
+
   return (
     <div className="flex min-h-screen bg-[#f7f9fb] font-sans antialiased">
-      {/* Mobile overlay backdrop */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-20 md:hidden"
@@ -56,13 +71,8 @@ export const AppLayout = ({
         />
       )}
 
-      {/* Sidebar */}
       <Sidebar
-        activeRoute={activeRoute}
-        onNavigate={(path) => {
-          router.push(path);
-          setSidebarOpen(false);
-        }}
+        activeRoute={route.id}
         onLogout={handleLogout}
         onOpenAddTx={() => {
           setIsAddTxOpen(true);
@@ -75,9 +85,9 @@ export const AppLayout = ({
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Header
-          title={title}
+          title={route.title}
           onLogout={handleLogout}
-          onMenuToggle={() => setSidebarOpen((o) => !o)}
+          onMenuToggle={() => setSidebarOpen((open) => !open)}
           isMenuOpen={sidebarOpen}
         />
         <main className="flex-1 overflow-y-auto p-4 md:p-8">
@@ -85,7 +95,6 @@ export const AppLayout = ({
         </main>
       </div>
 
-      {/* Global Transaction Modal */}
       <AddTransactionModal
         isOpen={isAddTxOpen}
         onClose={() => setIsAddTxOpen(false)}
@@ -94,4 +103,4 @@ export const AppLayout = ({
   );
 };
 
-export default AppLayout;
+export default DashboardShell;
