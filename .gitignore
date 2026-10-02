@@ -18,7 +18,14 @@ dist-ssr
 /build/
 *.tsbuildinfo
 next-env.d.ts
+
+# Environment
+.env
 .env*.local
+!.env.example
+
+# Temporary scripts
+.tmp-*
 
 # Editor directories and files
 .vscode/*
