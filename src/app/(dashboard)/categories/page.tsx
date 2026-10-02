@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { AppLayout } from "@/components/layout/AppLayout";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { api } from "@/lib/api/apiClient";
@@ -84,8 +83,7 @@ export default function CategoriesPage() {
   const expenseCategories = categories.filter((c) => c.type === "expense");
 
   return (
-    <AppLayout activeRoute="categories" title="Categories Management">
-      <div className="space-y-6">
+    <div className="space-y-6">
         {/* Create Custom Category Form Card */}
         <div className="bg-white p-6 rounded-xl border border-[#c6c6cd]/30 shadow-sm space-y-4">
           <h3 className="font-mono font-bold text-sm text-[#191c1e] flex items-center gap-2">
@@ -179,6 +177,7 @@ export default function CategoriesPage() {
                               }}
                               disabled={deleteCatMutation.isPending}
                               className="text-[#ba1a1a] hover:bg-rose-50 p-1 rounded transition-colors"
+                              aria-label={`Delete category ${cat.name}`}
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
@@ -230,6 +229,7 @@ export default function CategoriesPage() {
                               }}
                               disabled={deleteCatMutation.isPending}
                               className="text-[#ba1a1a] hover:bg-rose-50 p-1 rounded transition-colors"
+                              aria-label={`Delete category ${cat.name}`}
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
@@ -247,7 +247,6 @@ export default function CategoriesPage() {
             </div>
           </div>
         )}
-      </div>
-    </AppLayout>
+    </div>
   );
 }

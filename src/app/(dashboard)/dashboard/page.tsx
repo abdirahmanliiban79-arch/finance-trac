@@ -1,6 +1,5 @@
 "use client";
 
-import { AppLayout } from "@/components/layout/AppLayout";
 import { StatCards } from "@/components/dashboard/StatCards";
 import { RecentTransactions } from "@/components/dashboard/RecentTransactions";
 import { SpendingChart } from "@/components/dashboard/SpendingChart";
@@ -9,11 +8,17 @@ import { api } from "@/lib/api/apiClient";
 import type { Summary, Transaction } from "@/types";
 
 export default function DashboardPage() {
-  // 1. Fetch Monthly Summary Statistics from GET /transactions/summary
-  const { data: summaryData } = useQuery<Summary>({
-    queryKey: ["transactions-summary"],
+  const period = {
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+  };
+
+  const { data: summaryData, isLoading: isSummaryLoading } = useQuery<Summary>({
+    queryKey: ["transactions-summary", period.year, period.month],
     queryFn: async (): Promise<Summary> => {
-      const response = await api.get("/transactions/summary");
+      const response = await api.get("/transactions/summary", {
+        params: period,
+      });
       return (
         response.data?.data || {
           netBalance: 0,
@@ -24,7 +29,6 @@ export default function DashboardPage() {
     },
   });
 
-  // 2. Fetch User Transactions List from GET /transactions
   const { data: transactions = [], isLoading: isTxLoading } = useQuery<
     Transaction[]
   >({
@@ -42,18 +46,16 @@ export default function DashboardPage() {
   };
 
   return (
-    <AppLayout activeRoute="dashboard" title="Dashboard">
-      {/* Dynamic Stat Cards */}
-      <StatCards stats={stats} />
+    <>
+      <StatCards stats={stats} isLoading={isSummaryLoading} />
 
-      {/* Analytics & Transactions Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
-        <SpendingChart transactions={transactions} />
+        <SpendingChart transactions={transactions} isLoading={isTxLoading} />
         <RecentTransactions
           transactions={transactions}
           isLoading={isTxLoading}
         />
       </div>
-    </AppLayout>
+    </>
   );
 }

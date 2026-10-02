@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { AppLayout } from "@/components/layout/AppLayout";
+import { useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { api } from "@/lib/api/apiClient";
@@ -20,7 +19,9 @@ import type { ApiErrorBody, Transaction } from "@/types";
 export default function TransactionsPage() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
-  const [typeFilter, setTypeFilter] = useState<string>("all"); // 'all', 'income', 'expense'
+  const [typeFilter, setTypeFilter] = useState<"all" | "income" | "expense">(
+    "all",
+  );
 
   // Fetch Transactions List
   const { data: transactions = [], isLoading } = useQuery<Transaction[]>({
@@ -50,18 +51,21 @@ export default function TransactionsPage() {
   });
 
   // Filtered transactions
-  const filteredTransactions = transactions.filter((tx) => {
-    const matchesSearch =
-      (tx.description || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (tx.category?.name || "").toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType =
-      typeFilter === "all" ? true : tx.type === typeFilter;
-    return matchesSearch && matchesType;
-  });
+  const filteredTransactions = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    return transactions.filter((tx) => {
+      const matchesSearch =
+        query.length === 0 ||
+        (tx.description || "").toLowerCase().includes(query) ||
+        (tx.category?.name || "").toLowerCase().includes(query);
+      const matchesType = typeFilter === "all" ? true : tx.type === typeFilter;
+      return matchesSearch && matchesType;
+    });
+  }, [transactions, searchQuery, typeFilter]);
 
   return (
-    <AppLayout activeRoute="transactions" title="Transactions Management">
-      <div className="space-y-6">
+    <div className="space-y-6">
         {/* Header Control Panel */}
         <div className="bg-white p-6 rounded-xl border border-[#c6c6cd]/30 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="relative w-full md:w-80">
@@ -181,6 +185,7 @@ export default function TransactionsPage() {
                         disabled={deleteMutation.isPending}
                         className="text-[#ba1a1a] hover:bg-rose-50 p-2 rounded transition-colors"
                         title="Delete Transaction"
+                        aria-label="Delete transaction"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -191,7 +196,6 @@ export default function TransactionsPage() {
             </div>
           )}
         </div>
-      </div>
-    </AppLayout>
+    </div>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { AppLayout } from "@/components/layout/AppLayout";
 import { useAuthStore } from "@/lib/api/store/authStore";
 import { Shield, Database } from "lucide-react";
 
@@ -8,8 +7,7 @@ export default function SettingsPage() {
   const { user } = useAuthStore();
 
   return (
-    <AppLayout activeRoute="settings" title="Account Settings">
-      <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-4xl">
         {/* User Profile Card */}
         <div className="bg-white p-6 rounded-xl border border-[#c6c6cd]/30 shadow-sm space-y-4">
           <div className="flex items-center gap-4">
@@ -61,7 +59,6 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
-      </div>
-    </AppLayout>
+    </div>
   );
 }
