@@ -1,19 +1,45 @@
-# React + Vite
+# Finance Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Personal finance tracker built with [Next.js](https://nextjs.org) (App Router), React 19, TypeScript, and Tailwind CSS v4.
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Install dependencies and start the development server:
 
-## React Compiler
+```bash
+npm install
+npm run dev
+```
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-Note: This will impact Vite dev & build performances.
+## Scripts
 
-## Expanding the ESLint configuration
+- `npm run dev` — start the development server
+- `npm run build` — create a production build
+- `npm run start` — run the production server
+- `npm run lint` — run ESLint
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# full-stack-frontend
+## Environment Variables
+
+Copy `.env.example` to `.env.local` to override the API base URL:
+
+```bash
+cp .env.example .env.local
+```
+
+| Variable | Description |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | Backend API base URL (defaults to the hosted API) |
+
+## Project Structure
+
+- `src/app` — App Router routes and layouts
+- `src/components` — shared React components
+- `src/lib` — utilities and API clients
+- `public` — static assets
+
+## Continuous Integration
+
+`.github/workflows/ci.yml` runs type checking, linting, and a production build on every push and pull request to `main`.
+
