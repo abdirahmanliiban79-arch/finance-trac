@@ -6,18 +6,17 @@ interface StatCardsProps {
     totalIncome?: number;
     totalExpenses?: number;
   };
+  isLoading?: boolean;
 }
 
-export const StatCards = ({ stats }: StatCardsProps) => {
-  // Default values haddii aan data wali la helin
+export const StatCards = ({ stats, isLoading }: StatCardsProps) => {
   const { totalBalance = 0, totalIncome = 0, totalExpenses = 0 } = stats || {};
 
   const cards = [
     {
-      title: "Total Balance",
+      title: "Net Balance",
       amount: `$${totalBalance.toLocaleString()}`,
-      change: "+12.5%",
-      isPositive: true,
+      caption: "This month",
       icon: Wallet,
       bgColor: "bg-black text-white",
       iconColor: "bg-white/10 text-white",
@@ -25,8 +24,7 @@ export const StatCards = ({ stats }: StatCardsProps) => {
     {
       title: "Total Income",
       amount: `$${totalIncome.toLocaleString()}`,
-      change: "+8.2%",
-      isPositive: true,
+      caption: "This month",
       icon: ArrowUpRight,
       bgColor: "bg-white text-[#191c1e]",
       iconColor: "bg-[#eceef0] text-[#006c49]",
@@ -34,8 +32,7 @@ export const StatCards = ({ stats }: StatCardsProps) => {
     {
       title: "Total Expenses",
       amount: `$${totalExpenses.toLocaleString()}`,
-      change: "-3.1%",
-      isPositive: false,
+      caption: "This month",
       icon: ArrowDownRight,
       bgColor: "bg-white text-[#191c1e]",
       iconColor: "bg-[#ffdad6]/50 text-[#ba1a1a]",
@@ -63,17 +60,14 @@ export const StatCards = ({ stats }: StatCardsProps) => {
             </div>
 
             <div>
-              <h3 className="text-3xl font-bold font-mono tracking-tight">
-                {card.amount}
-              </h3>
-              <div className="flex items-center gap-1.5 mt-2 text-xs">
-                <span
-                  className={`font-semibold ${card.isPositive ? "text-emerald-600" : "text-rose-600"}`}
-                >
-                  {card.change}
-                </span>
-                <span className="opacity-60">vs last month</span>
-              </div>
+              {isLoading ? (
+                <div className="h-9 w-28 animate-pulse rounded bg-current opacity-20" />
+              ) : (
+                <h3 className="text-3xl font-bold font-mono tracking-tight">
+                  {card.amount}
+                </h3>
+              )}
+              <div className="mt-2 text-xs opacity-60">{card.caption}</div>
             </div>
           </div>
         );

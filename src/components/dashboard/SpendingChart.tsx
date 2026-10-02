@@ -6,11 +6,15 @@ import type { Transaction } from "@/types";
 
 interface SpendingChartProps {
   transactions?: Transaction[];
+  isLoading?: boolean;
 }
 
 const MONTHS_BACK = 6;
 
-export const SpendingChart = ({ transactions = [] }: SpendingChartProps) => {
+export const SpendingChart = ({
+  transactions = [],
+  isLoading,
+}: SpendingChartProps) => {
   const { months, maxTotal, hasData } = useMemo(() => {
     const now = new Date();
     const buckets = Array.from({ length: MONTHS_BACK }, (_, index) => {
@@ -74,7 +78,9 @@ export const SpendingChart = ({ transactions = [] }: SpendingChartProps) => {
         </div>
       </div>
 
-      {hasData ? (
+      {isLoading ? (
+        <div className="h-48 animate-pulse rounded-lg border border-[#c6c6cd]/30 bg-[#eceef0]" />
+      ) : hasData ? (
         <div className="h-48 bg-[#f7f9fb] rounded-lg border border-[#c6c6cd]/30 px-4 pt-4 pb-2">
           <div className="flex h-full items-end justify-between gap-2 sm:gap-3">
             {months.map((month) => (
