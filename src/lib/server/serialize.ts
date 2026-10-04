@@ -1,7 +1,22 @@
-import type { IUser, UserDocument } from "./models/User";
+import type { UserDocument } from "./models/User";
 
-export function serializeUser(user: UserDocument): Partial<IUser> {
-  const safeUser = user.toObject() as Partial<IUser>;
-  delete safeUser.password;
-  return safeUser;
+export interface SerializedUser {
+  _id: string;
+  id: string;
+  username: string;
+  email: string;
+  role: string;
+  profilePic: string;
+}
+
+export function serializeUser(user: UserDocument): SerializedUser {
+  const id = String(user._id);
+  return {
+    _id: id,
+    id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+    profilePic: user.profilePic ?? "",
+  };
 }

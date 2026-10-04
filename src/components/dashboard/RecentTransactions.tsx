@@ -28,6 +28,7 @@ export const RecentTransactions = ({
       // Automatic Refetching
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       queryClient.invalidateQueries({ queryKey: ["transactions-summary"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions-chart"] });
     },
     onError: (error) => {
       const err = error as AxiosError<ApiErrorBody>;

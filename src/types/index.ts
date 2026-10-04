@@ -38,6 +38,14 @@ export interface Summary {
   totalExpense: number;
 }
 
+export interface ChartDataPoint {
+  year: number;
+  month: number;
+  label: string;
+  income: number;
+  expense: number;
+}
+
 export interface AuthResponse {
   status?: string;
   token?: string;

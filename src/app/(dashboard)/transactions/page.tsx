@@ -41,6 +41,7 @@ export default function TransactionsPage() {
       toast.success("Transaction deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       queryClient.invalidateQueries({ queryKey: ["transactions-summary"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions-chart"] });
     },
     onError: (error) => {
       const err = error as AxiosError<ApiErrorBody>;

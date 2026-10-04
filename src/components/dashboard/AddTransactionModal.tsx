@@ -98,6 +98,7 @@ export const AddTransactionModal = ({
       toast.success("Transaction added successfully!");
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       queryClient.invalidateQueries({ queryKey: ["transactions-summary"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions-chart"] });
 
       setFormData({
         amount: "",

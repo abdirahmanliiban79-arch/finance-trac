@@ -13,21 +13,22 @@ export default function DashboardPage() {
     month: new Date().getMonth() + 1,
   };
 
-  const { data: summaryData, isLoading: isSummaryLoading } = useQuery<Summary>({
-    queryKey: ["transactions-summary", period.year, period.month],
-    queryFn: async (): Promise<Summary> => {
-      const response = await api.get("/transactions/summary", {
-        params: period,
-      });
-      return (
-        response.data?.data || {
-          netBalance: 0,
-          totalIncome: 0,
-          totalExpense: 0,
-        }
-      );
-    },
-  });
+  const { data: summaryData, isLoading: isSummaryLoading } =
+    useQuery<Summary>({
+      queryKey: ["transactions-summary", period.year, period.month],
+      queryFn: async (): Promise<Summary> => {
+        const response = await api.get("/transactions/summary", {
+          params: period,
+        });
+        return (
+          response.data?.data || {
+            netBalance: 0,
+            totalIncome: 0,
+            totalExpense: 0,
+          }
+        );
+      },
+    });
 
   const { data: transactions = [], isLoading: isTxLoading } = useQuery<
     Transaction[]
@@ -40,9 +41,9 @@ export default function DashboardPage() {
   });
 
   const stats = {
-    totalBalance: summaryData?.netBalance || 0,
-    totalIncome: summaryData?.totalIncome || 0,
-    totalExpenses: summaryData?.totalExpense || 0,
+    totalBalance: summaryData?.netBalance ?? 0,
+    totalIncome: summaryData?.totalIncome ?? 0,
+    totalExpenses: summaryData?.totalExpense ?? 0,
   };
 
   return (
@@ -50,7 +51,9 @@ export default function DashboardPage() {
       <StatCards stats={stats} isLoading={isSummaryLoading} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
-        <SpendingChart transactions={transactions} isLoading={isTxLoading} />
+        {/* Chart backed by /api/transactions/chart */}
+        <SpendingChart />
+
         <RecentTransactions
           transactions={transactions}
           isLoading={isTxLoading}
